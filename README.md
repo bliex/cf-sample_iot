@@ -10,6 +10,7 @@
 ###output: 
  target/demo-0.0.1-SNAPSHOT.jar
 
+
 ##실행
 ###eclipse :
 + com.example.DemoApplication.java 에 대해서 Debug As > Java Application
@@ -19,6 +20,7 @@
 
 ###command line :
  `java -jar target/demo-0.0.1-SNAPSHOT.jar --IOT_MGMT_URL=http://localhost/ --IOT_OID=abcd --IOT_DKEY=abcd`
+
 
 ##필요 환경 변수
 + IOT_MGMT_URL
