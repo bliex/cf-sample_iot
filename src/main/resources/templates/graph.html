@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:include="layout :: head" />
+	<script src="./webjars/sockjs-client/1.0.2/sockjs.js"></script>
+	<script src="./webjars/stomp-websocket/2.3.3/stomp.js"></script>
+	<script src="./webjars/d3js/3.5.16/d3.js"></script>
+    <script src="./js/graph.js"></script>
+</head>      
+<body>
+	<noscript>
+		<h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+	    Javascript and reload this page!</h2>
+	</noscript>
+	<div style="text-align:center;"><h2 >iot 데모 페이지</h2><br/></div>
+	<div style="visibility: hidden; height:0px">
+        <button id="connect" type="button" class="btn btn-lg btn-primary">Connect</button>
+    </div>
+	<div  id="conversationDiv">
+ 		
+        <div style="float: left; width: 40%;">
+        <h4>조도 그래프</h4>
+        <div id="graph">
+        </div>
+        </div>
+        
+         <div style="float: left; width: 25%;">
+         <h4> 전구 제어</h4>
+     	<a id="lightON"><img src="/images/off.png"/></a>
+     	<a id="lightOFF"><img src="/images/on.png"/></a>
+     </div>
+      
+        <br/>
+        <h4> 데이터 로그 콘솔</h4>
+        <div style="margin:20px;overflow-y:scroll;height:150px;background:black;color:white;" id="response"></div>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,10 @@
+---
+applications: 
+- name: cf-sample_iot
+  path: target/demo-0.0.1-SNAPSHOT.jar
+  memory: 512M
+  random-route: true
+  env: 
+    IOT_MGMT_URL: http://localhost
+    IOT_OID: 0000.ppap
+    IOT_DKEY: abcd   
