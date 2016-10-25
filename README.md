@@ -27,3 +27,6 @@
 + IOT_OID
 + IOT_DKEY
 
+
+---
+`--IOT_MGMT_URL=http://apim.startiot.or.kr:8281/charlot/base --IOT_OID=55555.4444.RP04 --IOT_DKEY=acaf9f4cab3aa10b66a68d451fdc961d`
