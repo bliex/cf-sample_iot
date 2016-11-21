@@ -1,8 +1,8 @@
 var stompClient = null;
 //var i = 1;
-var light_value = 0;
+var humidity_value = 0;
 var temperature_value = 0;
-var sound_value = 0;
+var door_value = 0;
 
 
 
@@ -15,21 +15,28 @@ function showMessage(message) {
 }
 
 $( document ).ready(function() {
-	
 	connect();
+    $("#response").html("");
+    $("#graph").html("");
 });
 
-	
+
 
 function connect() {
     
-    var socket = new SockJS('/timeline');
+	var socket = new SockJS('/timeline');
+	   
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
         graphStart();
         stompClient.subscribe('/topic/subscribe', function(message){
-        	showMessage(new Date());
+        	
+//        
+        	// graph value
+            temperature_value = JSON.parse(JSON.parse(message.body).body).temperature;         
+            humidity_value = JSON.parse(JSON.parse(message.body).body).humidity;
+            showMessage(new Date());
         	//showMessage("수신 content-type : " + message.headers["content-type"]);
         	var ct = JSON.parse(message.body).headers["content-type"];
         	ct ? "" : ct = JSON.parse(message.body).headers["Content-Type"];
@@ -38,12 +45,31 @@ function connect() {
         	ot ? showMessage("수신 본문의 x-m2m-ot : " + ot) : "";
         	showMessage("수신 본문 내용  : " + JSON.parse(message.body).body);
         	
-//        
-        	// graph value
-            temperature_value = JSON.parse(JSON.parse(message.body).body).temperature;         
-        	light_value = ((JSON.parse(JSON.parse(message.body).body).light) - 500)/6;
-        	sound_value = JSON.parse(JSON.parse(message.body).body).sound;
-            
+           
+        });
+    }, function(error) {
+    	console.log(error);
+    	disconnect();
+    });
+    
+    
+    
+    
+    
+    var window_socket = new SockJS('/realwindow');
+    stompClient2 = Stomp.over(window_socket);
+    stompClient2.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+        stompClient2.subscribe('/topic/subscribe2', function(message){
+        	if(JSON.parse(message.body).body == "MQ=="){
+        		door_value = 1;
+        	}
+        	
+        	else if(JSON.parse(message.body).body == "MA=="){
+            	door_value = 0;
+        	}
+    
+//        	
            
         });
     }, function(error) {
@@ -57,9 +83,9 @@ function connect() {
 function graphStart(){
 	var n = 60,		// x 축 범위를 위한 변수 
 	random = d3.random.normal(0, 0), 
-	light_data = d3.range(n).map(random),		// 0~0 으로 x축(60) 범위를 초기화 한다.
+	humidity_data = d3.range(n).map(random),		// 0~0 으로 x축(60) 범위를 초기화 한다.
 	temperature_data = d3.range(n).map(random);
-	sound_data = d3.range(n).map(random);
+	door_data = d3.range(n).map(random);
 	var margin = {top: 20, right: 20, bottom: 20, left: 40},	// 그래프 상하좌우 공백
 	width = 500 - margin.left - margin.right,	// 그래프 x 크기
 	height = 280 - margin.top - margin.bottom;	// 그래프 y 크기 
@@ -93,15 +119,15 @@ function graphStart(){
 	svg.append("g")		// y 축에 대한 그룹 엘리먼트 설정 
 		.attr("class", "y axis")
 		.call(d3.svg.axis().scale(y).orient("left"));
-	var light_path = svg.append("g") 
+	var humidity_path = svg.append("g") 
 		.attr("clip-path", "url(#clip)")
 		.append("path")    // 실제 데이터가 그려질 패스에 대한 설정 
-		.datum(light_data)
+		.datum(humidity_data)
 		.attr("class", "line")
 		.attr("d", line);
-	light_path	// 실제 데이터가 그려질 패스에 대한 스타일 설정 
-		.style("stroke-width", 1)
-		.style("stroke", "#50d598")
+	humidity_path	// 실제 데이터가 그려질 패스에 대한 스타일 설정 
+		.style("stroke-width", 2)
+		.style("stroke", "#0000ff")
 		.style("fill", "none");	
 	var temperature_path = svg.append("g") 
 	.attr("clip-path", "url(#clip)")
@@ -110,28 +136,28 @@ function graphStart(){
 	.attr("class", "line")
 	.attr("d", line);
 	temperature_path	// 실제 데이터가 그려질 패스에 대한 스타일 설정 
-		.style("stroke-width", 1)
+		.style("stroke-width", 2)
 		.style("stroke", "#ff0000")
 		.style("fill", "none");	
-	var sound_path = svg.append("g") 
+	var door_path = svg.append("g") 
 	.attr("clip-path", "url(#clip)")
 	.append("path")    // 실제 데이터가 그려질 패스에 대한 설정 
-	.datum(sound_data)
+	.datum(door_data)
 	.attr("class", "line")
 	.attr("d", line);
-	sound_path	// 실제 데이터가 그려질 패스에 대한 스타일 설정 
-		.style("stroke-width", 1)
-		.style("stroke", "#0000ff")
+	door_path	// 실제 데이터가 그려질 패스에 대한 스타일 설정 
+		.style("stroke-width", 2)
+		.style("stroke", "#50d598")
 		.style("fill", "none");	
 	tick();  
 
 	function tick() {
 		// 새로운 데이터를 뒤에 추가한다.
-		light_data.push(light_value);
+		humidity_data.push(humidity_value);
 		temperature_data.push(temperature_value);
-		sound_data.push(sound_value)
+		door_data.push(door_value)
 		// 라인을 PATH 방식으로 그리자!!!   
-		light_path
+		humidity_path
 			.attr("d", line)
 			.attr("transform", null)	// 기존 변환 행렬을 초기화하고  
 			.transition()		// 변환 시작
@@ -147,7 +173,7 @@ function graphStart(){
 			.ease("linear")		// ease 보간을 리니어로 처리
 			.attr("transform", "translate(" + x(-1) + ",0)")   //  변환행렬 설정   # 패스를 다시 그리는 방식                                                                                     //  아니라 좌표를 변환함으로써 출렁거리는것을 막는다. 
 			.each("end", tick);    //tick 함수 계속 호출 
-		sound_path
+		door_path
 		.attr("d", line)
 		.attr("transform", null)	// 기존 변환 행렬을 초기화하고  
 		.transition()		// 변환 시작
@@ -156,8 +182,8 @@ function graphStart(){
 		.attr("transform", "translate(" + x(-1) + ",0)")   //  변환행렬 설정   # 패스를 다시 그리는 방식                                                                                     //  아니라 좌표를 변환함으로써 출렁거리는것을 막는다. 
 		.each("end", tick);    //tick 함수 계속 호출 
 		//가장 오래된 데이터를 제거한다.
-		light_data.shift();
+		humidity_data.shift();
 		temperature_data.shift();
-		sound_data.shift();
+		door_data.shift();
 	}	
 }

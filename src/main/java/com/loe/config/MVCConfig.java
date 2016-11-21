@@ -9,7 +9,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("forward:/plug");
+        registry.addViewController("/").setViewName("forward:/graph");
         registry.addViewController("/graph").setViewName("graph");
         registry.addViewController("/plug").setViewName("plug");
 	}
