@@ -59,13 +59,14 @@ public class MainController {
         System.out.println("content : " + content);
         
 		//content = "{ \""+content.split("'")[1]+"\" :  \""+content.split("'")[3]+"\" , \""+content.split("'")[5]+"\" :  \""+content.split("'")[7]+"\" , \""+content.split("'")[9]+"\" :  \""+content.split("'")[11]+"\" }";
-		HttpEntity<String> entity = new HttpEntity<String>(content, headers);
+        content = new String(Base64Utils.decodeFromString((String)content));
+        HttpEntity<String> entity = new HttpEntity<String>(content, headers);
 		this.template.convertAndSend("/topic/subscribe",entity);
 	}
 	
-/* Iolab  개소식 m2m 소스 
+/* Iolab  媛쒖냼��m2m �뚯뒪 
  
-	@RequestMapping(value="/m2m", method=RequestMethod.POST) // 서버에서 보내온 정보를 구독함.
+	@RequestMapping(value="/m2m", method=RequestMethod.POST) // �쒕쾭�먯꽌 蹂대궡���뺣낫瑜�援щ룆��
 	@ResponseStatus(value=HttpStatus.OK)
 	public void notify(@RequestBody String body, @RequestHeader HttpHeaders headers) throws Exception {
 		String content = paser(paser(body,"representation"),"content");
@@ -75,12 +76,12 @@ public class MainController {
 	       
 	    String light_url ="";
 	    String led_url ="";
-	    if(value.equals("1")){  //창문 OPEN
+	    if(value.equals("1")){  //李쎈Ц OPEN
 	    	System.out.println("window OPEN");
 	    	sendMgmt("http://apim.startiot.or.kr:8281/charlot/base", "88888.8888.RP05", "switch1", "ON","switch2","ON", "fc4b959205accb2638f0259a1faa9b4b");
 	    	sendMgmt("http://apim.startiot.or.kr:8281/charlot/base", "00000.0002.etc", "led", "OPEN","led2","OPEN", "3026d3880b8fc91991ff0e4ba290c0e0");
 
-	    }else if(value.equals("0")){ //창문 Close
+	    }else if(value.equals("0")){ //李쎈Ц Close
 	    	System.out.println("window CLOSE");
 	    	sendMgmt("http://apim.startiot.or.kr:8281/charlot/base", "88888.8888.RP05", "switch1", "OFF", "switch2","OFF","fc4b959205accb2638f0259a1faa9b4b");
 	    	sendMgmt("http://apim.startiot.or.kr:8281/charlot/base", "00000.0002.etc", "led", "CLOSE","led2","CLOSE", "3026d3880b8fc91991ff0e4ba290c0e0");
@@ -94,7 +95,7 @@ public class MainController {
 	}	
 * 	
  */
-	@MessageMapping("/timeline") // 데모 페이지로 보냄.
+	@MessageMapping("/timeline") // �곕え �섏씠吏�줈 蹂대깂.
 	@SendTo("/topic/subscribe")
 	public HttpEntity<String> timeline(@RequestBody String body) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
@@ -105,14 +106,14 @@ public class MainController {
 
 	
 public void sendMgmt(String url,String deviceName, String cmdName, String cmd, String cmdName1, String cmd1, String dKey) throws ParseException, IOException{
-	 //RP05 -> 전구
+	 //RP05 -> �꾧뎄
    String desUrl = url+"/control-"+deviceName;
    System.out.println("desurl : " + desUrl);
     CloseableHttpClient httpclient = HttpClients.createDefault();
 	try {
 		HttpPut httpPut = new HttpPut(desUrl);
-		httpPut.setHeader("X-M2M-RI", "RQI0001"); // 리퀘스트 ID
-		httpPut.setHeader("X-M2M-Origin", "/S"+deviceName); // 제어자 이름
+		httpPut.setHeader("X-M2M-RI", "RQI0001"); // 由ы��ㅽ듃 ID
+		httpPut.setHeader("X-M2M-Origin", "/S"+deviceName); // �쒖뼱���대쫫
 		httpPut.setHeader("Accept", "application/json");
 		httpPut.setHeader("Authorization","Bearer "+dKey);
 		httpPut.setHeader("Content-Type","application/vnd.onem2m-res+json");		

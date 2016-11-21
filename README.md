@@ -1,25 +1,25 @@
 #cf-sample_iot
 
 ##빌드
-###mvn 이 설치되어 있다면: 
-`mvn clean package`
+###gradle이 설치되어 있지 않다면: 
+`gradlew assemble`
 
-###mvn 이 설치되어 있지 않다면: 
-`mvnw cmd clean package`
+###gradle이 설치되어 있다면: 
+`gradle assemble`
 
 ###output: 
- target/demo-0.0.1-SNAPSHOT.jar
+ build/libs/app-1.0.jar
 
 
 ##실행
 ###eclipse :
-+ com.example.DemoApplication.java 에 대해서 Debug As > Java Application
-+ Debug Configurations > Java Application > DemoApplication 
++ com.loe.ChromeAppApplication.java 에 대해서 Debug As > Java Application
++ Debug Configurations > Java Application > ChromeAppApplication 
    [Arguments] > Program arguments:
    `--IOT_MGMT_URL=http://localhost/ --IOT_OID=abcd --IOT_DKEY=abcd`
 
 ###command line :
- `java -jar target/demo-0.0.1-SNAPSHOT.jar --IOT_MGMT_URL=http://localhost/ --IOT_OID=abcd --IOT_DKEY=abcd`
+ `java -jar build/libs/app-1.0.jar --IOT_MGMT_URL=http://localhost/ --IOT_OID=abcd --IOT_DKEY=abcd`
 
 
 ##필요 환경 변수
@@ -27,3 +27,6 @@
 + IOT_OID
 + IOT_DKEY
 
+
+---
+`--IOT_MGMT_URL=http://apim.startiot.or.kr:8281/charlot/base --IOT_OID=55555.4444.RP04 --IOT_DKEY=acaf9f4cab3aa10b66a68d451fdc961d`
